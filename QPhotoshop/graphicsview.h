@@ -3,6 +3,7 @@
 
 #include <QGraphicsScene>
 #include <QGraphicsView>
+class QMouseEvent;
 class GraphicsView : public QGraphicsView
 {
     Q_OBJECT
@@ -18,9 +19,25 @@ signals:
 public slots:
 
 private:
+     enum ITEM_HANDLE{
+         Top,
+         TopLeft,
+         TopRight,
+         Left,
+         Right,
+         Bottom,
+         BottmLeft,
+         BottomRight,
+     };
+     QGraphicsRectItem  *handles[8];
      QGraphicsScene *scene;
+     QGraphicsItem *currentItem;
 
-     void setCursorShape(const QPoint &pos, const QRect &rect);
+     void initHandles();
+     void handleSelectedItems(const QRectF &rect);
+     void setCursorShape(QMouseEvent *event, QGraphicsItem *item);
+
+
 };
 
 #endif // GRAPHICSVIEW_H
