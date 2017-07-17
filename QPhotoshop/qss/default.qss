@@ -1,0 +1,85 @@
+/*If one desires to move the dock widget buttons to the left, the following style sheet can be used:*/
+
+QDockWidget{
+width:36px;
+border:1px solid lightgray;
+titlebar-close-icon: url(close.png);
+titlebar-normal-icon: url(float.png);
+}
+
+QDockWidget::title {
+text-align: left;
+background: lightgray;
+padding-left:35px;
+}
+
+QDockWidget::close-button,QDockWidget::float-button {
+background: darkgray;
+padding:0px;
+icon-size:14px;/* maximum icon size */
+}
+
+QDockWidget::close-button:hover,QDockWidget::float-button:hover {
+background: gray;
+}
+
+QDockWidget::close-button:pressed,QDockWidget::float-button:pressed {
+padding:1px-1px-1px1px;
+}
+
+QDockWidget::close-button {
+subcontrol-position: top left;
+subcontrol-origin: margin;
+position: absolute;
+top:0px; left:0px; bottom:0px;
+width:14px;
+}
+
+QDockWidget::float-button {
+subcontrol-position: top left;
+subcontrol-origin: margin;
+position: absolute;
+top:0px; left:16px; bottom:0px;
+width:14px;
+}
+
+QPushButton{
+border:2px solid #8f8f91;
+border-radius:6px;
+background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+stop:0#f6f7fa, stop: 1 #dadbde);
+min-width:20px;
+}
+
+QPushButton:pressed {
+background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+stop:0#dadbde, stop: 1 #f6f7fa);
+}
+
+QPushButton:flat {
+border: none;/* no border for a flat push button */
+}
+
+QPushButton:default{
+border-color: navy;/* make the default button prominent */
+}
+
+
+
+For a QPushButton with a menu, use the ::menu-indicator subcontrol.
+
+QPushButton:open {/* when the button has its menu open */
+background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+stop:0#dadbde, stop: 1 #f6f7fa);
+}
+
+QPushButton::menu-indicator {
+image: url(menu_indicator.png);
+subcontrol-origin: padding;
+subcontrol-position: bottom right;
+}
+
+QPushButton::menu-indicator:pressed,QPushButton::menu-indicator:open {
+position: relative;
+top:2px; left:2px;/* shift the arrow by 2 px */
+}
