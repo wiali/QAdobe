@@ -31,14 +31,14 @@ private:
          BottmLeft,
          BottomRight,
      };
-     QGraphicsItemGroup *currentGroup;
+     QGraphicsItemGroup *currentGroup = nullptr;
      QList<QGraphicsItem *> handles;
-     QGraphicsScene *scene;
-     QGraphicsItem *currentItem;
+     QGraphicsScene *scene = nullptr;
+     QGraphicsItem *currentItem = nullptr;
      ITEM_HANDLE currentHandle;
 
      bool leftPressed = false;
-     void initHandles();
+     void createHandles(QGraphicsItem * item);
      void handleSelectedItems(const QRectF &rect);
      void setCursorShape(const QPoint &pos);
      void resizeCurrentItem(const QPointF &pos);

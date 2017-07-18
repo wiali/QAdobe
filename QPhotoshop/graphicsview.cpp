@@ -8,7 +8,7 @@ GraphicsView::GraphicsView(QWidget *parent) : QGraphicsView(parent)
 {
     scene = new QGraphicsScene(this);
 
-    initHandles();
+
 //    qDebug()<< parent->width()<< parent->height();
     this->setFixedSize(parent->width(), parent->height());
     scene->setSceneRect(0,0,parent->width(), parent->height());
@@ -29,7 +29,7 @@ GraphicsView::GraphicsView(QWidget *parent) : QGraphicsView(parent)
 
 //    this->setDragMode(QGraphicsView::ScrollHandDrag);
 
-      currentItem = scene->addRect(100, 100, 100,80);
+      currentItem = scene->addRect(100, 80, 100,80);
       currentItem->setFlags(QGraphicsItem::ItemIsFocusable| QGraphicsItem::ItemIsSelectable| QGraphicsItem::ItemIsMovable);
 //      rect->setRect(100,20,50,500);
 //      rect->boundingRect().adjust(10,10,10,10);
@@ -45,11 +45,12 @@ GraphicsView::GraphicsView(QWidget *parent) : QGraphicsView(parent)
 //    this->setMouseTracking(true);
 
 
-        qDebug() << currentItem->pos() << currentItem->boundingRect();
-         handleSelectedItems(currentItem->boundingRect());
-//         currentGroup->setSelected(true);
-         currentGroup->addToGroup(currentItem);
-         this->setDragMode(QGraphicsView::RubberBandDrag);
+
+
+
+         createHandles(currentItem);
+
+         currentGroup->setFlags(QGraphicsItem::ItemIsMovable);
 }
 
 GraphicsView::~GraphicsView()
@@ -93,43 +94,51 @@ void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
     QGraphicsView::mouseReleaseEvent(event);
 }
 
-void GraphicsView::initHandles()
+void GraphicsView::createHandles(QGraphicsItem *item)
 {
     QPen pen(Qt::green);
+    if(!this->handles.isEmpty()){
+        for(QGraphicsItem* item: this->handles)
+        this->scene->removeItem(item);
+        this->handles.clear();
+        if(currentGroup != nullptr)
+            this->scene->destroyItemGroup(currentGroup);
+    }
+    this->handles << scene->addRect(-HANDLESIZE/2,-HANDLESIZE/2,HANDLESIZE,HANDLESIZE,pen);
+    this->handles << scene->addRect(-HANDLESIZE/2,-HANDLESIZE/2,HANDLESIZE,HANDLESIZE,pen);
+    this->handles << scene->addRect(-HANDLESIZE/2,-HANDLESIZE/2,HANDLESIZE,HANDLESIZE,pen);
+    this->handles << scene->addRect(-HANDLESIZE/2,-HANDLESIZE/2,HANDLESIZE,HANDLESIZE,pen);
+    this->handles << scene->addRect(-HANDLESIZE/2,-HANDLESIZE/2,HANDLESIZE,HANDLESIZE,pen);
+    this->handles << scene->addRect(-HANDLESIZE/2,-HANDLESIZE/2,HANDLESIZE,HANDLESIZE,pen);
+    this->handles << scene->addRect(-HANDLESIZE/2,-HANDLESIZE/2,HANDLESIZE,HANDLESIZE,pen);
+    this->handles << scene->addRect(-HANDLESIZE/2,-HANDLESIZE/2,HANDLESIZE,HANDLESIZE,pen);
 
-    handles << scene->addRect(-HANDLESIZE/2,-HANDLESIZE/2,HANDLESIZE,HANDLESIZE,pen);
-    handles << scene->addRect(-HANDLESIZE/2,-HANDLESIZE/2,HANDLESIZE,HANDLESIZE,pen);
-    handles << scene->addRect(-HANDLESIZE/2,-HANDLESIZE/2,HANDLESIZE,HANDLESIZE,pen);
-    handles << scene->addRect(-HANDLESIZE/2,-HANDLESIZE/2,HANDLESIZE,HANDLESIZE,pen);
-    handles << scene->addRect(-HANDLESIZE/2,-HANDLESIZE/2,HANDLESIZE,HANDLESIZE,pen);
-    handles << scene->addRect(-HANDLESIZE/2,-HANDLESIZE/2,HANDLESIZE,HANDLESIZE,pen);
-    handles << scene->addRect(-HANDLESIZE/2,-HANDLESIZE/2,HANDLESIZE,HANDLESIZE,pen);
-    handles << scene->addRect(-HANDLESIZE/2,-HANDLESIZE/2,HANDLESIZE,HANDLESIZE,pen);
+    this->handles << item;
 
-    currentGroup = this->scene->createItemGroup(handles);
+    this->currentGroup = this->scene->createItemGroup(handles);
 
-    currentGroup->setFlags(QGraphicsItem::ItemIsMovable);
-
-
-//    for(int i =0; i <8; i++)
-//        handles[i]->setFlags(QGraphicsItem::ItemIsMovable);
+    this->handleSelectedItems(currentItem->boundingRect());
 }
 
 
 void GraphicsView::setCursorShape(const QPoint &pos)
 {
-    qDebug() << leftPressed;
+//    qDebug() << leftPressed << currentItem->boundingRect() << currentItem->boundingRect().contains(pos);
+
     if(leftPressed) {
         if(cursor().shape() == Qt::OpenHandCursor){
 
+            this->currentGroup->setFlag(QGraphicsItem::ItemIsMovable);
             return setCursor(Qt::ClosedHandCursor);
-        }/*else if(cursor().shape() == Qt::ClosedHandCursor){
-            return
-        }*/else{
-            this->setDragMode(QGraphicsView::NoDrag);
+        }else if(cursor().shape() == Qt::ClosedHandCursor){
+            return;
+        }else{
+//            this->setDragMode(QGraphicsView::NoDrag);
+            this->currentGroup->setFlag(QGraphicsItem::ItemIsMovable,false);
             return resizeCurrentItem(pos);
         }
     }
+//    qDebug() << "set cursor";
     if(itemAt(pos) == handles[Top]){
 
         currentHandle = Top;
@@ -174,6 +183,7 @@ void GraphicsView::setCursorShape(const QPoint &pos)
 
         setCursor(Qt::OpenHandCursor);
     }else{
+
         setCursor(Qt::ArrowCursor);
     }
 
@@ -293,15 +303,14 @@ void GraphicsView::resizeCurrentItem(const QPointF &pos)
         default:
             break;
         }
+        handleSelectedItems(this->currentItem->boundingRect());
+        this->createHandles(this->currentItem);
     }
-    this->currentGroup->addToGroup(this->currentItem);
-    handleSelectedItems(currentItem->boundingRect());
+
 }
 
 void GraphicsView::handleSelectedItems(const QRectF &rect)
 {
-//    qDebug() << rect;
-
     handles[Top]->setPos(rect.center().x(), rect.top());
     handles[TopLeft]->setPos(rect.left(),rect.top());//
     handles[TopRight]->setPos(rect.right(), rect.top());

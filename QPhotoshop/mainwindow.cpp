@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 //    graphicsView->setRenderHint(QPainter::Antialiasing);
 //    graphicsView->setCacheMode(QGraphicsView::CacheBackground);
 //    graphicsView->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
-    graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
+//    graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
 
     this->setCentralWidget(graphicsView);
     nameTools << "直线"<<"矩形"<<"圆形"<<"椭圆";
