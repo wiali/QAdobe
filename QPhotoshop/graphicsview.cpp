@@ -8,54 +8,25 @@ GraphicsView::GraphicsView(QWidget *parent) : QGraphicsView(parent)
 {
     scene = new QGraphicsScene(this);
 
-
-//    qDebug()<< parent->width()<< parent->height();
     this->setFixedSize(parent->width(), parent->height());
     scene->setSceneRect(0,0,parent->width(), parent->height());
-//    scene->setSceneRect(0,0,static_cast<QWidget *>(scene->parent())->size().width(),static_cast<QWidget *>(scene->parent())->size().height());
 
     this->setDragMode(QGraphicsView::RubberBandDrag);
     this->setOptimizationFlags(QGraphicsView::DontSavePainterState);
     this->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     this->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-
     this->setScene(scene);
 
-//    QMatrix matrix;
-//    matrix.scale(1.2, 1.2);
-//    matrix.rotate(60);
-
-//    this->setMatrix(matrix);
-
-//    this->setDragMode(QGraphicsView::ScrollHandDrag);
-
-      currentItem = scene->addRect(100, 80, 100,80);
-      currentItem->setFlags(QGraphicsItem::ItemIsFocusable| QGraphicsItem::ItemIsSelectable| QGraphicsItem::ItemIsMovable);
-//      rect->setRect(100,20,50,500);
-//      rect->boundingRect().adjust(10,10,10,10);
-//      rect->setFlag(QGraphicsItem::ItemIsMovable);
-//      rect->setFlags(QGraphicsItem::ItemIsSelectable);
-//      rect->setFocus();
-//      rect->setSelected(true);
-
-//      rect->setCursor(Qt::SizeHorCursor);
-//      rect->setFlag(QGraphicsItem::ItemIsFocusScope, true);
-//     scene->addLine(10,10,58,65)->setFlags(QGraphicsItem::ItemIsFocusScope| QGraphicsItem::ItemIsMovable);//<< QGraphicsRectItem::Type << QGraphicsLineItem::Type;
-//      rect->prepareGeometryChange();
-//    this->setMouseTracking(true);
-
-
-
-
-
-         createHandles(currentItem);
-
-         currentGroup->setFlags(QGraphicsItem::ItemIsMovable);
+    this->currentItem = scene->addRect(100, 80, 100,80);
+    this->currentItem->setFlags(QGraphicsItem::ItemIsFocusable| QGraphicsItem::ItemIsSelectable| QGraphicsItem::ItemIsMovable);
+    this->createHandles(currentItem);
+    this->currentGroup->setFlags(QGraphicsItem::ItemIsMovable);
 }
 
 GraphicsView::~GraphicsView()
 {
     if(currentGroup != nullptr){
+        this->scene->destroyItemGroup(currentGroup);
         delete currentGroup;
     }
     if(currentItem != nullptr){
@@ -65,30 +36,22 @@ GraphicsView::~GraphicsView()
 
 void GraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
-//    qDebug() << "mouseMoveEvent" << leftPressed;
-
-//   currentItem->setSelected(true);
    setCursorShape(event->pos());
-
-
 
    QGraphicsView::mouseMoveEvent(event);
 }
 
 void GraphicsView::mousePressEvent(QMouseEvent *event)
 {
-    qDebug() << "mousePressEvent";
     if(event->buttons() ==  Qt::LeftButton)
     {
         leftPressed = true;
- //        setCursor(Qt::ClosedHandCursor);
     }
     QGraphicsView::mousePressEvent(event);
 }
 
 void GraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
-    qDebug() << "mouseReleaseEvent";
     leftPressed = false;
 
     QGraphicsView::mouseReleaseEvent(event);
@@ -98,8 +61,8 @@ void GraphicsView::createHandles(QGraphicsItem *item)
 {
     QPen pen(Qt::green);
     if(!this->handles.isEmpty()){
-        for(QGraphicsItem* item: this->handles)
-        this->scene->removeItem(item);
+        for(int i=0; i<8; i++)
+        this->scene->removeItem(handles[i]);
         this->handles.clear();
         if(currentGroup != nullptr)
             this->scene->destroyItemGroup(currentGroup);
@@ -123,12 +86,9 @@ void GraphicsView::createHandles(QGraphicsItem *item)
 
 void GraphicsView::setCursorShape(const QPoint &pos)
 {
-//    qDebug() << leftPressed << currentItem->boundingRect() << currentItem->boundingRect().contains(pos);
 
     if(leftPressed) {
         if(cursor().shape() == Qt::OpenHandCursor){
-
-            this->currentGroup->setFlag(QGraphicsItem::ItemIsMovable);
             return setCursor(Qt::ClosedHandCursor);
         }else if(cursor().shape() == Qt::ClosedHandCursor){
             return;
@@ -182,6 +142,7 @@ void GraphicsView::setCursorShape(const QPoint &pos)
     }else if(currentItem->boundingRect().contains(pos)){
 
         setCursor(Qt::OpenHandCursor);
+        this->currentGroup->setFlag(QGraphicsItem::ItemIsMovable);
     }else{
 
         setCursor(Qt::ArrowCursor);
@@ -260,8 +221,6 @@ void GraphicsView::resizeCurrentItem(const QPointF &pos)
 
             this->handles[BottomRight]->setPos(xpos, ypos);
             rect.setBottomRight(QPoint(xpos,ypos));
-//            rect.setRight(rect.right()-1);
-//            rect.setBottom(rect.bottom()-1);
         }
     }else if(cursor().shape() == Qt::SizeBDiagCursor){
         resizing = true;
@@ -274,7 +233,6 @@ void GraphicsView::resizeCurrentItem(const QPointF &pos)
             this->handles[TopRight]->setPos(xpos, ypos);
             rect.setTopRight(QPoint(xpos,ypos));
             rect.setBottom(rect.bottom()-1);
-//            rect.setBottomRight(QPoint(rect.right()-1,rect.bottom()-1));
 
         }else if(this->currentHandle == BottmLeft){
             xpos = pos.x()+HANDLESIZE/2;
@@ -285,8 +243,6 @@ void GraphicsView::resizeCurrentItem(const QPointF &pos)
             this->handles[BottmLeft]->setPos(xpos, ypos);
             rect.setBottomLeft(QPoint(xpos,ypos));
             rect.setRight(rect.right()-1);
-//            rect.setRight(rect.right()-1);
-//            rect.setBottom(rect.bottom()-1);
         }
     }
     if(resizing){
@@ -295,10 +251,7 @@ void GraphicsView::resizeCurrentItem(const QPointF &pos)
         switch (currentItem->type())
         {
         case QGraphicsRectItem::Type:
-
              this->currentItem = this->scene->addRect(rect);
-
-
             break;
         default:
             break;
