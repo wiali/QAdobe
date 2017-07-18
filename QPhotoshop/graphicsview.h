@@ -14,6 +14,8 @@ public:
 
 protected: 
     void mouseMoveEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
 signals:
 
 public slots:
@@ -29,14 +31,17 @@ private:
          BottmLeft,
          BottomRight,
      };
-     QGraphicsRectItem  *handles[8];
+     QGraphicsItemGroup *currentGroup;
+     QList<QGraphicsItem *> handles;
      QGraphicsScene *scene;
      QGraphicsItem *currentItem;
+     ITEM_HANDLE currentHandle;
 
+     bool leftPressed = false;
      void initHandles();
      void handleSelectedItems(const QRectF &rect);
-     void setCursorShape(QMouseEvent *event, QGraphicsItem *item);
-
+     void setCursorShape(const QPoint &pos);
+     void resizeCurrentItem(const QPointF &pos);
 
 };
 

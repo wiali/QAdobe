@@ -9,6 +9,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     signalMapper = new QSignalMapper(this);
     graphicsView = new GraphicsView(this);
+//    graphicsView->setRenderHint(QPainter::Antialiasing);
+//    graphicsView->setCacheMode(QGraphicsView::CacheBackground);
+//    graphicsView->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+    graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
+
     this->setCentralWidget(graphicsView);
     nameTools << "直线"<<"矩形"<<"圆形"<<"椭圆";
     for(QString name: nameTools)
