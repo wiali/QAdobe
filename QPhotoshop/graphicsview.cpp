@@ -29,6 +29,11 @@ GraphicsView::~GraphicsView()
         this->scene->destroyItemGroup(currentGroup);
         delete currentGroup;
     }
+
+    while(!this->handles.isEmpty()){
+        delete handles.takeFirst();
+    }
+
     if(currentItem != nullptr){
         delete currentItem;
     }
