@@ -17,8 +17,11 @@ GraphicsView::GraphicsView(QWidget *parent) : QGraphicsView(parent)
     this->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
     this->setScene(scene);
 
+    this->currentItem = scene->addPixmap(QPixmap(":/img/000181.jpg"));
+    this->currentItem->setFlags(QGraphicsItem::ItemIsFocusable| QGraphicsItem::ItemIsSelectable| QGraphicsItem::ItemIsMovable);
     this->currentItem = scene->addRect(100, 80, 100,80);
     this->currentItem->setFlags(QGraphicsItem::ItemIsFocusable| QGraphicsItem::ItemIsSelectable| QGraphicsItem::ItemIsMovable);
+    this->currentItem->setSelected(true);
     this->createHandles(currentItem);
     this->currentGroup->setFlags(QGraphicsItem::ItemIsMovable);
 }
