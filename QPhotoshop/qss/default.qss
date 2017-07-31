@@ -42,7 +42,7 @@ position: absolute;
 top:0px; left:16px; bottom:0px;
 width:14px;
 }
-
+/*
 QPushButton{
 border:2px solid #8f8f91;
 border-radius:6px;
@@ -83,3 +83,4 @@ QPushButton::menu-indicator:pressed,QPushButton::menu-indicator:open {
 position: relative;
 top:2px; left:2px;/* shift the arrow by 2 px */
 }
+*/

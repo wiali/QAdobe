@@ -2,5 +2,8 @@
     <qresource prefix="/">
         <file>qss/default.qss</file>
         <file>img/000181.jpg</file>
+        <file>fonts/FontAwesome.otf</file>
+        <file>fonts/awesome.js</file>
+        <file>fonts/font_ali.ttf</file>
     </qresource>
 </RCC>

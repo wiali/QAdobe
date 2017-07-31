@@ -3,11 +3,15 @@
 #include <QGraphicsItem>
 #include <QMouseEvent>
 #include <QDebug>
+#include <QRubberBand>
 #define HANDLESIZE 12
 GraphicsView::GraphicsView(QWidget *parent) : QGraphicsView(parent)
 {
     scene = new QGraphicsScene(this);
 
+//    QRubberBand *t = new QRubberBand(QRubberBand::Rectangle, this);    
+//    t->show();
+    
     this->setFixedSize(parent->width(), parent->height());
     scene->setSceneRect(0,0,parent->width(), parent->height());
 
@@ -101,7 +105,7 @@ void GraphicsView::setCursorShape(const QPoint &pos)
         }else if(cursor().shape() == Qt::ClosedHandCursor){
             return;
         }else{
-//            this->setDragMode(QGraphicsView::NoDrag);
+//          this->setDragMode(QGraphicsView::NoDrag);
             this->currentGroup->setFlag(QGraphicsItem::ItemIsMovable,false);
             return resizeCurrentItem(pos);
         }

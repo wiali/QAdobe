@@ -11,7 +11,6 @@ public:
     explicit GraphicsView(QWidget *parent = nullptr);
     ~GraphicsView();
 
-
 protected: 
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);

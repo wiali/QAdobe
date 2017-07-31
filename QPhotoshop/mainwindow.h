@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QSignalMapper>
+#include <QButtonGroup> 
 #include "graphicsview.h"
 namespace Ui {
 class MainWindow;
@@ -18,12 +19,13 @@ public:
 
 
 private slots:
-    onClicked(const QString &name);
+     
 private:
     Ui::MainWindow *ui;
-    QSignalMapper *signalMapper;
+//    QSignalMapper *signalMapper;
     QStringList nameTools;
     GraphicsView *graphicsView;
+    QButtonGroup *groupTools;
 };
 
 #endif // MAINWINDOW_H
